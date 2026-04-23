@@ -2,576 +2,132 @@
 <html lang="ro">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-    <title>TreeID - Identificare Specii Copaci</title>
-    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E🌳%3C/text%3E%3C/svg%3E">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TreeID - Simplu</title>
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
         body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
-            background: linear-gradient(135deg, #1e3c0c 0%, #2d5016 100%);
-            min-height: 100vh;
-            padding: 16px;
+            font-family: Arial;
+            background: #2d5016;
+            padding: 20px;
+            margin: 0;
         }
-
-        .app {
+        .container {
             max-width: 500px;
             margin: 0 auto;
             background: white;
-            border-radius: 28px;
-            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
-            overflow: hidden;
-        }
-
-        /* Header */
-        .header {
-            background: linear-gradient(135deg, #1e3c0c 0%, #3a6b1e 100%);
-            color: white;
-            padding: 24px 20px;
-            text-align: center;
-        }
-
-        .header h1 {
-            font-size: 28px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 10px;
-        }
-
-        .header p {
-            font-size: 14px;
-            opacity: 0.9;
-            margin-top: 8px;
-        }
-
-        /* Main content */
-        .main {
+            border-radius: 20px;
             padding: 20px;
         }
-
-        /* Butoane */
-        .btn-group {
-            display: flex;
-            gap: 12px;
-            margin-bottom: 20px;
-        }
-
-        .btn {
-            flex: 1;
-            padding: 14px;
+        button {
+            background: #4a7c23;
+            color: white;
             border: none;
-            border-radius: 16px;
-            font-size: 16px;
-            font-weight: 600;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 8px;
-            transition: transform 0.2s;
-        }
-
-        .btn:active {
-            transform: scale(0.97);
-        }
-
-        .btn-primary {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-        }
-
-        .btn-secondary {
-            background: #e0e0e0;
-            color: #333;
-        }
-
-        .btn-success {
-            background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
-            color: white;
-        }
-
-        .btn-danger {
-            background: #ff6b6b;
-            color: white;
-        }
-
-        /* Preview imagine */
-        .image-preview {
-            background: #f5f5f5;
-            border-radius: 20px;
-            overflow: hidden;
-            margin-bottom: 20px;
-            display: none;
-        }
-
-        .image-preview img {
+            padding: 15px;
+            margin: 10px 0;
             width: 100%;
-            height: auto;
-            display: block;
-        }
-
-        .preview-actions {
-            display: flex;
-            gap: 12px;
-            padding: 16px;
-        }
-
-        /* Formular selecție manuală */
-        .manual-select {
-            background: #f9f9f9;
-            border-radius: 20px;
-            padding: 20px;
-            margin-bottom: 20px;
-        }
-
-        .manual-select h3 {
-            margin-bottom: 16px;
-            color: #333;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-
-        .species-grid {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 10px;
-            margin-bottom: 16px;
-        }
-
-        .species-card {
-            background: white;
-            border: 2px solid #e0e0e0;
-            border-radius: 12px;
-            padding: 12px;
-            text-align: center;
-            cursor: pointer;
-            transition: all 0.2s;
-        }
-
-        .species-card.selected {
-            border-color: #4a7c23;
-            background: #e8f5e9;
-        }
-
-        .species-card:active {
-            transform: scale(0.98);
-        }
-
-        .species-emoji {
-            font-size: 32px;
-            display: block;
-        }
-
-        .species-name {
-            font-size: 14px;
-            font-weight: 600;
-            margin-top: 5px;
-        }
-
-        /* Rezultate */
-        .result-card {
-            background: linear-gradient(135deg, #1e3c0c 0%, #2d5016 100%);
-            color: white;
-            border-radius: 20px;
-            padding: 20px;
-            margin-bottom: 16px;
-        }
-
-        .result-species {
-            font-size: 28px;
-            font-weight: bold;
-            margin-bottom: 8px;
-        }
-
-        .result-confidence {
-            font-size: 14px;
-            color: #38ef7d;
-            margin-bottom: 16px;
-        }
-
-        .result-detail {
-            font-size: 14px;
-            line-height: 1.6;
-            margin-top: 16px;
-            padding-top: 16px;
-            border-top: 1px solid rgba(255,255,255,0.2);
-        }
-
-        .result-detail p {
-            margin: 8px 0;
-        }
-
-        /* Locație */
-        .location-box {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            border-radius: 16px;
-            padding: 16px;
-            margin-bottom: 20px;
-            display: none;
-        }
-
-        .location-box h3 {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            margin-bottom: 12px;
-        }
-
-        /* Istoric */
-        .history-section {
-            border-top: 1px solid #e0e0e0;
-            padding-top: 20px;
-            margin-top: 10px;
-        }
-
-        .history-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 16px;
-        }
-
-        .history-list {
-            max-height: 250px;
-            overflow-y: auto;
-        }
-
-        .history-item {
-            background: #f9f9f9;
-            border-radius: 12px;
-            padding: 12px;
-            margin-bottom: 10px;
+            font-size: 18px;
+            border-radius: 10px;
             cursor: pointer;
         }
-
-        .history-item:active {
-            background: #e0e0e0;
+        img {
+            max-width: 100%;
+            border-radius: 10px;
+            margin: 10px 0;
         }
-
-        .history-title {
-            display: flex;
-            justify-content: space-between;
-            font-weight: 600;
-            margin-bottom: 5px;
-        }
-
-        .history-date {
-            font-size: 11px;
-            color: #999;
-        }
-
-        .empty-history {
-            text-align: center;
-            color: #999;
-            padding: 30px;
-        }
-
-        /* Modal rezultate */
-        .modal {
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: rgba(0,0,0,0.95);
-            z-index: 1000;
-            display: none;
-            overflow-y: auto;
-            padding: 20px;
-        }
-
-        .modal-content {
-            max-width: 500px;
-            margin: 20px auto;
-        }
-
-        .modal-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 16px;
-        }
-
-        .close-modal {
-            background: none;
-            border: none;
-            color: white;
-            font-size: 28px;
+        .species {
+            display: inline-block;
+            background: #f0f0f0;
+            padding: 10px;
+            margin: 5px;
+            border-radius: 10px;
             cursor: pointer;
         }
-
-        /* Export */
-        .export-btn {
-            width: 100%;
-            padding: 14px;
-            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+        .selected {
+            background: #4a7c23;
             color: white;
-            border: none;
-            border-radius: 16px;
-            font-size: 16px;
-            font-weight: 600;
-            cursor: pointer;
+        }
+        .result {
+            background: #2d5016;
+            color: white;
+            padding: 15px;
+            border-radius: 10px;
             margin-top: 20px;
-        }
-
-        .small-btn {
-            background: #ff6b6b;
-            color: white;
-            border: none;
-            padding: 8px 16px;
-            border-radius: 20px;
-            font-size: 12px;
-            cursor: pointer;
-        }
-
-        .hidden {
-            display: none;
-        }
-
-        footer {
-            background: #f5f5f5;
-            padding: 16px;
-            text-align: center;
-            font-size: 11px;
-            color: #666;
         }
     </style>
 </head>
 <body>
-    <div class="app">
-        <div class="header">
-            <h1>
-                <span>🌳</span>
-                <span>TreeID</span>
-            </h1>
-            <p>Identificare specii de copaci</p>
+    <div class="container">
+        <h1>🌳 TreeID</h1>
+        <p>Identificare copaci - Versiune simplă</p>
+
+        <button id="galleryBtn">📷 Selectează din galerie</button>
+        <button id="cameraBtn">📸 Fă o poză</button>
+
+        <div id="preview" style="display:none;">
+            <img id="image">
+            <button id="identifyBtn">🔍 Identifică specia</button>
+            <button id="cancelBtn">❌ Anulează</button>
         </div>
 
-        <div class="main">
-            <!-- Butoane principale -->
-            <div class="btn-group">
-                <button class="btn btn-secondary" id="galleryBtn">
-                    📷 Galerie
-                </button>
-                <button class="btn btn-primary" id="cameraBtn">
-                    📸 Cameră
-                </button>
-            </div>
+        <hr>
 
-            <!-- Preview imagine -->
-            <div class="image-preview" id="imagePreview">
-                <img id="previewImg" alt="Previzualizare">
-                <div class="preview-actions">
-                    <button class="btn btn-success" id="analyzeBtn">🔍 Identifică</button>
-                    <button class="btn btn-danger" id="clearBtn">✕ Anulează</button>
-                </div>
-            </div>
+        <h3>SAU selectează manual:</h3>
+        <div id="speciesList"></div>
+        <button id="manualBtn">✅ Confirmă selecția</button>
 
-            <!-- Selecție manuală -->
-            <div class="manual-select">
-                <h3>
-                    <span>✋</span>
-                    <span>SAU selectează manual specia:</span>
-                </h3>
-                <div class="species-grid" id="speciesGrid">
-                    <!-- Se completează cu JS -->
-                </div>
-                <button class="btn btn-primary" id="manualSelectBtn" style="width: 100%; margin-top: 10px;">
-                    ✅ Confirmă selecția
-                </button>
-            </div>
+        <div id="location"></div>
+        <div id="history"></div>
+        <button id="exportBtn">📥 Exportă CSV</button>
+        <button id="clearHistoryBtn">🗑️ Șterge istoric</button>
 
-            <!-- Locație -->
-            <div class="location-box" id="locationBox">
-                <h3>
-                    <span>📍</span>
-                    <span>Locația ta</span>
-                </h3>
-                <div id="locationText">Așteaptă date GPS...</div>
-            </div>
-
-            <!-- Istoric -->
-            <div class="history-section">
-                <div class="history-header">
-                    <h3>📜 Istoric identificări</h3>
-                    <button class="small-btn" id="clearHistoryBtn">Șterge tot</button>
-                </div>
-                <div class="history-list" id="historyList">
-                    <div class="empty-history">Nicio identificare încă</div>
-                </div>
-            </div>
-
-            <!-- Export -->
-            <button class="export-btn" id="exportBtn">📥 Exportă date (CSV)</button>
-        </div>
-
-        <footer>
-            <p>TreeID v2.0 | Selectează specia manual sau folosește AI-ul</p>
-        </footer>
-    </div>
-
-    <!-- Modal rezultate -->
-    <div class="modal" id="resultModal">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h2 style="color: white;">📋 Rezultat</h2>
-                <button class="close-modal" id="closeModalBtn">✕</button>
-            </div>
-            <div id="resultContent"></div>
-        </div>
+        <div id="result" style="display:none;" class="result"></div>
     </div>
 
     <script>
-        // Baza de date cu specii de copaci
-        const treeSpecies = {
-            'stejar': {
-                numeStiintific: 'Quercus robur',
-                familie: 'Fagaceae',
-                descriere: 'Copac mare, poate atinge 40m înălțime. Frunze lobate, scoarță crăpată.',
-                utilizari: 'Lemn de construcții, mobilier, parchet, butoaie pentru vin.',
-                frunza: 'Lobată, margini neregulate, verde închis',
-                fruct: 'Ghindă',
-                emoji: '🌳'
-            },
-            'fag': {
-                numeStiintific: 'Fagus sylvatica',
-                familie: 'Fagaceae',
-                descriere: 'Copac cu scoarță netedă, gri-argintie, poate atinge 30-40m.',
-                utilizari: 'Lemn pentru mobilier, parchet, lemn de foc de calitate.',
-                frunza: 'Ovală, margini ușor ondulate, verde lucios',
-                fruct: 'Fagă',
-                emoji: '🌲'
-            },
-            'brad': {
-                numeStiintific: 'Abies alba',
-                familie: 'Pinaceae',
-                descriere: 'Conifer cu coroană conică, ace verzi pe față și albe pe dos.',
-                utilizari: 'Lemn pentru construcții, hârtie, decorațiuni de Crăciun.',
-                frunza: 'Ace plate, lucioase pe față',
-                fruct: 'Conuri erecte',
-                emoji: '🎄'
-            },
-            'pin': {
-                numeStiintific: 'Pinus sylvestris',
-                familie: 'Pinaceae',
-                descriere: 'Conifer cu scoarță roșiatică în partea superioară.',
-                utilizari: 'Lemn pentru construcții, rășină, uleiuri esențiale.',
-                frunza: 'Ace lungi, ascuțite, grupate câte două',
-                fruct: 'Conuri ovoidale',
-                emoji: '🌲'
-            },
-            'mesteacăn': {
-                numeStiintific: 'Betula pendula',
-                familie: 'Betulaceae',
-                descriere: 'Copac cu scoarță albă, care se exfoliază în benzi.',
-                utilizari: 'Lemn pentru placaj, mobilier, ceai din frunze.',
-                frunza: 'Triunghiulară, margini dublu-serate',
-                fruct: 'Amenti',
-                emoji: '🌿'
-            },
-            'artar': {
-                numeStiintific: 'Acer platanoides',
-                familie: 'Sapindaceae',
-                descriere: 'Frunze palmate caracteristice, cu 5-7 lobi ascuțiți.',
-                utilizari: 'Lemn pentru mobilier, instrumente muzicale, sirop.',
-                frunza: 'Palmata, lobi ascuțiți, verde închis',
-                fruct: 'Samară (aripă)',
-                emoji: '🍁'
-            },
-            'tei': {
-                numeStiintific: 'Tilia cordata',
-                familie: 'Malvaceae',
-                descriere: 'Copac cu frunze în formă de inimă, flori parfumate.',
-                utilizari: 'Ceai din flori (calmant), lemn ușor pentru sculptură.',
-                frunza: 'Cordată (inimă), margini dințate',
-                fruct: 'Nucuță sferică',
-                emoji: '🌸'
-            },
-            'salcie': {
-                numeStiintific: 'Salix alba',
-                familie: 'Salicaceae',
-                descriere: 'Copac care crește lângă ape, cu ramuri plângătoare.',
-                utilizari: 'Lemn ușor, coșărie, aspirină din scoarță.',
-                frunza: 'Lunguiață, îngustă, argintie pe dos',
-                fruct: 'Capsulă cu semințe păroase',
-                emoji: '🌾'
-            }
+        const species = {
+            'Stejar': 'Copac mare cu frunze lobate, lemn tare folosit la mobilier',
+            'Fag': 'Copac cu scoarță netedă, lemn folosit la parchet',
+            'Brad': 'Conifer cu coroană conică, folosit la decorațiuni',
+            'Pin': 'Conifer cu ace lungi, lemn pentru construcții',
+            'Mesteacăn': 'Copac cu scoarță albă, lemn pentru placaj',
+            'Arțar': 'Frunze palmate, cunoscut pentru sirop',
+            'Tei': 'Frunze în formă de inimă, flori parfumate folosite la ceai',
+            'Salcie': 'Crește lângă apă, ramuri plângătoare'
         };
 
-        // Aplicația principală
-        let currentImageData = null;
+        let currentImage = null;
         let currentLocation = null;
         let selectedSpecies = null;
-        let identifications = [];
+        let history = [];
 
         // Inițializare
-        document.addEventListener('DOMContentLoaded', () => {
+        function init() {
             loadHistory();
-            renderSpeciesGrid();
-            setupEventListeners();
+            showSpecies();
             getLocation();
-        });
-
-        function renderSpeciesGrid() {
-            const grid = document.getElementById('speciesGrid');
-            grid.innerHTML = '';
             
-            Object.keys(treeSpecies).forEach(speciesKey => {
-                const species = treeSpecies[speciesKey];
-                const card = document.createElement('div');
-                card.className = 'species-card';
-                card.onclick = () => selectSpecies(speciesKey);
-                card.innerHTML = `
-                    <span class="species-emoji">${species.emoji}</span>
-                    <span class="species-name">${speciesKey.charAt(0).toUpperCase() + speciesKey.slice(1)}</span>
-                `;
-                grid.appendChild(card);
-            });
+            document.getElementById('galleryBtn').onclick = () => pickImage('gallery');
+            document.getElementById('cameraBtn').onclick = () => pickImage('camera');
+            document.getElementById('identifyBtn').onclick = identifyTree;
+            document.getElementById('cancelBtn').onclick = cancelPreview;
+            document.getElementById('manualBtn').onclick = manualSelect;
+            document.getElementById('exportBtn').onclick = exportCSV;
+            document.getElementById('clearHistoryBtn').onclick = clearHistory;
         }
 
-        function selectSpecies(speciesKey) {
-            selectedSpecies = speciesKey;
-            
-            // Evidențiază cardul selectat
-            document.querySelectorAll('.species-card').forEach((card, index) => {
-                const speciesName = Object.keys(treeSpecies)[index];
-                if (speciesName === speciesKey) {
-                    card.classList.add('selected');
-                } else {
-                    card.classList.remove('selected');
-                }
-            });
-        }
-
-        function setupEventListeners() {
-            document.getElementById('galleryBtn').addEventListener('click', openGallery);
-            document.getElementById('cameraBtn').addEventListener('click', openCamera);
-            document.getElementById('analyzeBtn').addEventListener('click', analyzeImage);
-            document.getElementById('clearBtn').addEventListener('click', clearPreview);
-            document.getElementById('manualSelectBtn').addEventListener('click', manualSelect);
-            document.getElementById('exportBtn').addEventListener('click', exportData);
-            document.getElementById('clearHistoryBtn').addEventListener('click', clearHistory);
-            document.getElementById('closeModalBtn').addEventListener('click', closeModal);
-        }
-
-        function openGallery() {
+        function pickImage(type) {
             const input = document.createElement('input');
             input.type = 'file';
             input.accept = 'image/*';
+            if (type === 'camera') input.capture = 'environment';
             input.onchange = (e) => {
                 const file = e.target.files[0];
                 if (file) {
                     const reader = new FileReader();
-                    reader.onload = (event) => {
-                        showPreview(event.target.result);
+                    reader.onload = (ev) => {
+                        currentImage = ev.target.result;
+                        document.getElementById('image').src = currentImage;
+                        document.getElementById('preview').style.display = 'block';
                     };
                     reader.readAsDataURL(file);
                 }
@@ -579,208 +135,151 @@
             input.click();
         }
 
-        function openCamera() {
-            const input = document.createElement('input');
-            input.type = 'file';
-            input.accept = 'image/*';
-            input.capture = 'environment';
-            input.onchange = (e) => {
-                const file = e.target.files[0];
-                if (file) {
-                    const reader = new FileReader();
-                    reader.onload = (event) => {
-                        showPreview(event.target.result);
-                    };
-                    reader.readAsDataURL(file);
-                }
-            };
-            input.click();
-        }
-
-        function showPreview(imageData) {
-            currentImageData = imageData;
-            const previewImg = document.getElementById('previewImg');
-            previewImg.src = imageData;
-            document.getElementById('imagePreview').style.display = 'block';
-        }
-
-        function clearPreview() {
-            currentImageData = null;
-            document.getElementById('imagePreview').style.display = 'none';
-            document.getElementById('previewImg').src = '';
-        }
-
-        function analyzeImage() {
-            if (!currentImageData) {
-                alert('Te rog selectează sau capturează o imagine mai întâi!');
+        function identifyTree() {
+            if (!currentImage) {
+                alert('Selectează o imagine mai întâi!');
                 return;
             }
+            // Simulează identificare AI - alege aleator
+            const speciesList = Object.keys(species);
+            const random = speciesList[Math.floor(Math.random() * speciesList.length)];
+            showResult(random, Math.floor(Math.random() * 30) + 70);
+        }
 
-            // Simulează o identificare AI - alege o specie aleatorie pentru demo
-            // În realitate, aici ai putea integra un API de recunoaștere
-            const speciesList = Object.keys(treeSpecies);
-            const randomSpecies = speciesList[Math.floor(Math.random() * speciesList.length)];
-            
-            showResult(randomSpecies, Math.random() * 0.3 + 0.6);
+        function showSpecies() {
+            const container = document.getElementById('speciesList');
+            container.innerHTML = '';
+            Object.keys(species).forEach(name => {
+                const btn = document.createElement('button');
+                btn.textContent = name;
+                btn.className = 'species';
+                btn.onclick = () => {
+                    selectedSpecies = name;
+                    document.querySelectorAll('.species').forEach(b => b.classList.remove('selected'));
+                    btn.classList.add('selected');
+                };
+                container.appendChild(btn);
+            });
         }
 
         function manualSelect() {
             if (!selectedSpecies) {
-                alert('Te rog selectează o specie din listă!');
+                alert('Selectează o specie din listă!');
                 return;
             }
-            
-            showResult(selectedSpecies, 0.99);
+            showResult(selectedSpecies, 98);
         }
 
-        function showResult(speciesKey, confidence) {
-            const species = treeSpecies[speciesKey];
-            const confidencePercent = Math.round(confidence * 100);
-            const date = new Date().toLocaleString('ro-RO');
-            
-            const resultContent = document.getElementById('resultContent');
-            resultContent.innerHTML = `
-                <div class="result-card">
-                    <div class="result-species">
-                        ${species.emoji} ${speciesKey.charAt(0).toUpperCase() + speciesKey.slice(1)}
-                    </div>
-                    <div class="result-confidence">Încredere: ${confidencePercent}%</div>
-                    <div><strong>Nume științific:</strong> <em>${species.numeStiintific}</em></div>
-                    <div><strong>Familie:</strong> ${species.familie}</div>
-                    <div class="result-detail">
-                        <p><strong>📝 Descriere:</strong> ${species.descriere}</p>
-                        <p><strong>🍃 Frunza:</strong> ${species.frunza}</p>
-                        <p><strong>🍎 Fructul:</strong> ${species.fruct}</p>
-                        <p><strong>🪵 Utilizări:</strong> ${species.utilizari}</p>
-                        <p><strong>📅 Data:</strong> ${date}</p>
-                        ${currentLocation ? `<p><strong>📍 Locație:</strong> ${currentLocation.lat.toFixed(6)}, ${currentLocation.lon.toFixed(6)}</p>` : ''}
-                    </div>
-                </div>
+        function showResult(speciesName, confidence) {
+            const date = new Date().toLocaleString();
+            const html = `
+                <h2>🌳 ${speciesName}</h2>
+                <p>Încredere: ${confidence}%</p>
+                <p><strong>Descriere:</strong> ${species[speciesName]}</p>
+                <p><strong>Data:</strong> ${date}</p>
+                ${currentLocation ? `<p><strong>Locație:</strong> ${currentLocation.lat}, ${currentLocation.lon}</p>` : ''}
             `;
+            document.getElementById('result').innerHTML = html;
+            document.getElementById('result').style.display = 'block';
             
             // Salvează în istoric
-            const identification = {
+            history.unshift({
                 id: Date.now(),
+                species: speciesName,
+                confidence: confidence,
                 date: new Date().toISOString(),
-                species: speciesKey,
-                speciesName: speciesKey.charAt(0).toUpperCase() + speciesKey.slice(1),
-                confidence: confidencePercent,
-                location: currentLocation,
-                emoji: species.emoji
-            };
-            
-            identifications.unshift(identification);
+                location: currentLocation
+            });
             saveHistory();
-            updateHistoryList();
+            showHistory();
             
-            // Afișează modal
-            document.getElementById('resultModal').style.display = 'block';
+            // Ascunde preview
+            document.getElementById('preview').style.display = 'none';
+            currentImage = null;
+            
+            // Ascunde rezultatul după 5 secunde
+            setTimeout(() => {
+                document.getElementById('result').style.display = 'none';
+            }, 5000);
         }
 
-        function closeModal() {
-            document.getElementById('resultModal').style.display = 'none';
+        function cancelPreview() {
+            document.getElementById('preview').style.display = 'none';
+            currentImage = null;
         }
 
         function getLocation() {
-            if ('geolocation' in navigator) {
+            if (navigator.geolocation) {
                 navigator.geolocation.getCurrentPosition(
-                    (position) => {
+                    pos => {
                         currentLocation = {
-                            lat: position.coords.latitude,
-                            lon: position.coords.longitude,
-                            accuracy: position.coords.accuracy
+                            lat: pos.coords.latitude.toFixed(6),
+                            lon: pos.coords.longitude.toFixed(6)
                         };
-                        
-                        document.getElementById('locationText').innerHTML = `
-                            📍 Lat: ${currentLocation.lat.toFixed(6)}<br>
-                            📌 Lon: ${currentLocation.lon.toFixed(6)}<br>
-                            🎯 Precizie: ±${Math.round(currentLocation.accuracy)}m
-                        `;
-                        document.getElementById('locationBox').style.display = 'block';
+                        document.getElementById('location').innerHTML = `📍 Locație: ${currentLocation.lat}, ${currentLocation.lon}`;
                     },
-                    (error) => {
-                        document.getElementById('locationText').innerHTML = '⚠️ Acces location refuzat';
-                        document.getElementById('locationBox').style.display = 'block';
+                    err => {
+                        document.getElementById('location').innerHTML = '📍 Locație: indisponibilă';
                     }
                 );
-            } else {
-                document.getElementById('locationText').innerHTML = '❌ GPS nu este suportat';
-                document.getElementById('locationBox').style.display = 'block';
             }
         }
 
         function saveHistory() {
-            localStorage.setItem('treeIdentifications', JSON.stringify(identifications));
+            localStorage.setItem('treeHistory', JSON.stringify(history));
         }
 
         function loadHistory() {
-            const saved = localStorage.getItem('treeIdentifications');
+            const saved = localStorage.getItem('treeHistory');
             if (saved) {
-                identifications = JSON.parse(saved);
-                updateHistoryList();
+                history = JSON.parse(saved);
+                showHistory();
             }
         }
 
-        function updateHistoryList() {
-            const historyList = document.getElementById('historyList');
-            
-            if (identifications.length === 0) {
-                historyList.innerHTML = '<div class="empty-history">Nicio identificare încă</div>';
+        function showHistory() {
+            const container = document.getElementById('history');
+            if (history.length === 0) {
+                container.innerHTML = '<h3>📜 Istoric</h3><p>Nicio identificare încă</p>';
                 return;
             }
-            
-            historyList.innerHTML = identifications.slice(0, 15).map(item => `
-                <div class="history-item" onclick="showHistoryDetail(${item.id})">
-                    <div class="history-title">
-                        <span>${item.emoji} ${item.speciesName}</span>
-                        <span class="history-date">${new Date(item.date).toLocaleDateString('ro-RO')}</span>
-                    </div>
-                    <div>Încredere: ${item.confidence}%</div>
-                    ${item.location ? `<div style="font-size: 11px; color: #666;">📍 ${item.location.lat.toFixed(4)}, ${item.location.lon.toFixed(4)}</div>` : ''}
-                </div>
-            `).join('');
-        }
-
-        function showHistoryDetail(id) {
-            const item = identifications.find(i => i.id === id);
-            if (item) {
-                showResult(item.species, item.confidence / 100);
-            }
+            let html = '<h3>📜 Istoric</h3>';
+            history.slice(0, 5).forEach(h => {
+                html += `<div style="background:#f0f0f0; padding:10px; margin:5px 0; border-radius:10px;">
+                            <strong>${h.species}</strong> (${h.confidence}%)<br>
+                            <small>${new Date(h.date).toLocaleString()}</small>
+                         </div>`;
+            });
+            container.innerHTML = html;
         }
 
         function clearHistory() {
             if (confirm('Ștergi tot istoricul?')) {
-                identifications = [];
+                history = [];
                 saveHistory();
-                updateHistoryList();
+                showHistory();
             }
         }
 
-        function exportData() {
-            if (identifications.length === 0) {
+        function exportCSV() {
+            if (history.length === 0) {
                 alert('Nu există date de exportat!');
                 return;
             }
-            
-            let csv = "ID,Data,Specie,Confidenta%,Latitudine,Longitudine\n";
-            
-            identifications.forEach(item => {
-                csv += `${item.id},${new Date(item.date).toLocaleString('ro-RO')},${item.speciesName},${item.confidence},`;
-                csv += `${item.location ? item.location.lat : ''},${item.location ? item.location.lon : ''}\n`;
+            let csv = "ID,Data,Specie,Confidenta,Latitudine,Longitudine\n";
+            history.forEach(h => {
+                csv += `${h.id},${new Date(h.date).toLocaleString()},${h.species},${h.confidence},${h.location?.lat || ''},${h.location?.lon || ''}\n`;
             });
-            
-            const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+            const blob = new Blob([csv], { type: 'text/csv' });
             const link = document.createElement('a');
-            const url = URL.createObjectURL(blob);
-            link.href = url;
-            link.setAttribute('download', `tree_id_${new Date().toISOString().slice(0,19)}.csv`);
-            document.body.appendChild(link);
+            link.href = URL.createObjectURL(blob);
+            link.download = `treeid_${Date.now()}.csv`;
             link.click();
-            document.body.removeChild(link);
-            URL.revokeObjectURL(url);
-            
             alert('Date exportate cu succes!');
         }
+
+        // Pornește aplicația
+        init();
     </script>
 </body>
 </html>
